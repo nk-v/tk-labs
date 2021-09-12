@@ -1,0 +1,2 @@
+#ignore compile files
+src/*.js
