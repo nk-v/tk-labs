@@ -1,2 +1,2 @@
 #ignore compile files
-src/*.js
+src/**/*.js
