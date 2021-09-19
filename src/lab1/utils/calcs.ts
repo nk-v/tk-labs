@@ -1,19 +1,7 @@
 import * as math from "mathjs";
+import { Data, Func, RowProceed } from ".";
 
-type Data = {
-  mtx: math.MathArray;
-  row: number;
-  col: number;
-};
-
-type Func = (funcRowIndex: number) => void;
-
-enum RowProceed {
-  NEXT = "NEXT",
-  PREV = "PREV",
-}
-
-const execOnFoundRow = (
+export const execOnFoundRow = (
   { mtx, row, col }: Data,
   func: Func,
   type: RowProceed,
@@ -44,11 +32,11 @@ const execOnFoundRow = (
   return execFlag;
 };
 
-const xorRows = (mtx: math.MathArray, row: number, rowDiff: number) => {
+export const xorRows = (mtx: math.MathArray, row: number, rowDiff: number) => {
   mtx[rowDiff] = math.bitXor(mtx[rowDiff], mtx[row]);
 };
 
-const swapRows = (mtx: math.MathArray, row: number, rowDiff: number) => {
+export const swapRows = (mtx: math.MathArray, row: number, rowDiff: number) => {
   [mtx[row], mtx[rowDiff]] = [mtx[rowDiff], mtx[row]];
 };
 
@@ -58,51 +46,4 @@ export const removeZeros = (mtx: math.MathArray) => {
       mtx.splice(index, 1);
     }
   });
-};
-
-export const ref = (matrix: math.Matrix) => {
-  const [height, length] = matrix.size();
-  const mtx = matrix.toArray();
-  let row = 0,
-    col = 0;
-  while (row < height - 1 && col < length - 1) {
-    const execWithData = (func: Func, breakAfterExecution: boolean = false) =>
-      execOnFoundRow(
-        { mtx, row, col },
-        func,
-        RowProceed.NEXT,
-        breakAfterExecution
-      );
-
-    const xorRowsWithData = (rowNext: number) => xorRows(mtx, row, rowNext);
-    const swapRowsWithData = (rowNext: number) => swapRows(mtx, row, rowNext);
-
-    if (mtx[row][col]) {
-      execWithData(xorRowsWithData);
-      ++row;
-    } else {
-      if (execWithData(swapRowsWithData, true)) {
-        continue;
-      }
-    }
-    ++col;
-  }
-  removeZeros(mtx);
-  return math.matrix(mtx);
-};
-
-export const rref = (matrix: math.Matrix) => {
-  const [height, length] = matrix.size();
-  const mtx = matrix.toArray();
-
-  let row = 1;
-  for (let col = 1; col < length - 1 && row < height - 1; ++col) {
-    if (mtx[row][col]) {
-      const xorRowsWithData = (rowPrev: number) => xorRows(mtx, row, rowPrev);
-      execOnFoundRow({ mtx, row, col }, xorRowsWithData, RowProceed.PREV);
-      ++row;
-    }
-  }
-
-  return math.matrix(mtx);
 };
