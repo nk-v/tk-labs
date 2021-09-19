@@ -52,6 +52,14 @@ const swapRows = (mtx: math.MathArray, row: number, rowDiff: number) => {
   [mtx[row], mtx[rowDiff]] = [mtx[rowDiff], mtx[row]];
 };
 
+export const removeZeros = (mtx: math.MathArray) => {
+  mtx.forEach((value, index) => {
+    if (value.every((val) => !val)) {
+      mtx.splice(index, 1);
+    }
+  });
+};
+
 export const ref = (matrix: math.Matrix) => {
   const [height, length] = matrix.size();
   const mtx = matrix.toArray();
@@ -79,6 +87,7 @@ export const ref = (matrix: math.Matrix) => {
     }
     ++col;
   }
+  removeZeros(mtx);
   return math.matrix(mtx);
 };
 
