@@ -1,62 +1,53 @@
 import * as math from "mathjs";
 import { showMatrix } from "../../utils";
-import {ref} from "../1.1/calcs";
-import {rref} from "../1.2/calcs";
+import { ref } from "../1.1/calcs";
+import { rref } from "../1.2/calcs";
 
-const S = math.matrix([
-    [1,0, 1, 1, 0, 0, 0, 1, 0, 0],
-    [0 ,0, 0, 1, 1, 1, 0, 1, 0, 1],
-    [0 ,0, 0, 0, 1, 0, 0, 1, 0, 0],
-    [1 ,0, 1, 0, 1, 1, 1, 0, 0, 0],
-    [0 ,0, 0, 0, 1, 0, 0, 1, 1, 1],
-])
+export type BinaryMatrix = (0 | 1)[][];
 
-type BinaryMatrix = (0 | 1)[][];
+export class LinearCode {
+  n: number;
+  k: number;
 
-class LinearCode {
-    n: number;
-    k: number;
+  G: math.Matrix;
+  H: math.Matrix;
 
-    constructor(matrix: math.Matrix) {
-        // // Формируем порождающую матрицу в ступенчатом виде
-        const rMatrix = ref(matrix);
-        const [height, length] = rMatrix.size();
-        const mtx = rMatrix.toArray() as BinaryMatrix;
-        showMatrix(rMatrix, "Step 1");
+  constructor(S: math.Matrix) {
+    showMatrix(S, "Input:\nS =");
+    // // Формируем порождающую матрицу в ступенчатом виде
+    this.G = ref(S);
+    const [height, length] = this.G.size();
+    showMatrix(this.G, "Step 1, Result:\nG =");
 
-        let leading = mtx.map(row => row.findIndex(x => x===1)).filter(x => x >= 0);
-        console.log("lead =", leading);
-        // n - число столбцов
-        this.n = length;
-        // k - число строк без учёта полностью нулевых
-        this.k = leading.length;
-        console.log({n: this.n, k: this.k});
+    this.G = rref(this.G);
+    showMatrix(this.G, "Step 2, Result:\nG =");
 
-        const G_R = rref(math.matrix(mtx));
-        const mtx_G_R = G_R.toArray() as BinaryMatrix;
-        showMatrix(G_R, "Step 2");
+    let leading = this.G.toArray().map((row) => row.findIndex((x) => x === 1));
+    console.log("lead = ", leading);
+    // n - число столбцов
+    this.n = length;
+    // k - число строк без учёта полностью нулевых
+    this.k = height;
+    console.log({ n: this.n, k: this.k });
 
-        const X = removeColumns(mtx_G_R, leading);
-        showMatrix(math.matrix(X), "Shorter");
+    const X = removeColumns(this.G.toArray() as BinaryMatrix, leading);
+    showMatrix(math.matrix(X), "X =");
 
-        // Единичная матрица
-        const I = getI(this.n - this.k);
+    // Единичная матрица
+    const I = getI(this.n - this.k);
 
-        leading.forEach((rowIndex,i) => I.splice(rowIndex, 0, X[i]));
-        showMatrix(math.matrix(I), "Res");
-    }
+    leading.forEach((rowIndex, i) => I.splice(rowIndex, 0, X[i]));
+    this.H = math.matrix(I);
+    showMatrix(this.H, "Result");
+  }
 }
 
 const removeColumns = (mtx: BinaryMatrix, indexes: number[]) => {
-    return mtx.map(row => (
-        row.filter((_, index) => !indexes.includes(index))
-    ));
-}
+  return mtx.map((row) => row.filter((_, index) => !indexes.includes(index)));
+};
 
 const getI = (length: number) => {
-    return Array.from({ length }, (_, ind) => 
-        Array.from({ length }, (_, k) => ind === k ? 1 : 0)
-    );
-}
-
-new LinearCode(S);
+  return Array.from({ length }, (_, ind) =>
+    Array.from({ length }, (_, k) => (ind === k ? 1 : 0))
+  );
+};

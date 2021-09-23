@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "lab1": "ts-node ./src/lab1/tasks/mocks/test.ts"
+    "lab1": "ts-node ./src/lab1/main.ts"
   },
   "dependencies": {
     "mathjs": "^9.4.4"
