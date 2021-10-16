@@ -3,7 +3,7 @@ import { bitMultiply } from "../lab1/tasks/1.4-first/calcs";
 import { bitXor, index } from "mathjs";
 import math = require("mathjs");
 
-const getI = (length: number) =>
+export const getI = (length: number) =>
   Array.from({ length }, (_, ind) =>
     Array.from({ length }, (_, k) => (ind === k ? 1 : 0))
   );

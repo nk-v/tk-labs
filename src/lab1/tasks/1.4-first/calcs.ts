@@ -47,4 +47,4 @@ export const allWords = (k: number) =>
       elem.unshift(0);
     }
     return elem;
-  });
+  }) as (0 | 1)[][];
