@@ -4,12 +4,21 @@ import { HammingCode, ExtendedHammingCode } from "./Hamming";
 
 const r = 3;
 
-const { G, H, n, k } = new ExtendedHammingCode(r);
+const { G, H } = new ExtendedHammingCode(r);
 
+console.log("H = ");
 console.table(H);
-console.table(G);
+// console.table(G);
 
-const err = getRandomError(1, G[0].length);
+const err = getRandomError(3, G[0].length);
 const syndrome = bitMultiply(err, H);
 
-const areEqual = (a, b) => JSON.stringify(a) == JSON.stringify(b);
+let foundIndex = undefined;
+H.forEach((row, index) => {
+  if (JSON.stringify(row) === JSON.stringify(syndrome)) {
+    foundIndex = index;
+    return;
+  }
+});
+
+console.table({ err, syndrome, index: foundIndex ?? "Not found" });
