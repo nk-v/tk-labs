@@ -2,7 +2,8 @@
   "scripts": {
     "lab1": "ts-node ./src/lab1/main.ts",
     "lab2": "ts-node ./src/lab2",
-    "lab3": "ts-node ./src/lab3"
+    "lab3": "ts-node ./src/lab3",
+    "lab4": "ts-node ./src/lab4"
   },
   "dependencies": {
     "mathjs": "^9.4.4"
