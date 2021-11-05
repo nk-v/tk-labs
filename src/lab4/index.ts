@@ -1,8 +1,7 @@
-import { bitXor } from "mathjs";
 import { bitMultiply } from "../lab1/tasks/1.4-first/calcs";
 import { Golay } from "./Golay";
 import { ReedMuller } from "./ReedMuller";
-import { getRandomError, getRandomRow } from "./utils";
+import { getRandomError } from "./utils";
 
 const logGolay = () => {
   const { G, H, getErrFromSyndrome } = new Golay();
@@ -34,8 +33,10 @@ const logGolay = () => {
 };
 
 const logRM = () => {
-  const { G } = new ReedMuller(2, 2);
+  const reedMuller = new ReedMuller(1, 3);
+  const { G } = reedMuller;
   console.table(G);
+  console.table({ mes: reedMuller.fastDecode([1, 0, 1, 0, 1, 0, 1, 1]) });
 };
 
 logRM();

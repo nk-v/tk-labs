@@ -1,18 +1,13 @@
-import { pow } from "mathjs";
-import { getI } from "../lab2";
-
-const H = [
-  [1, 1],
-  [1, -1],
-];
-
-const I_2_m = (m: number) => getI(pow(2, m) as number);
+import { multiply, pow } from "mathjs";
+import { getI, H_m_i } from "./utils";
 
 export class ReedMuller {
   G;
+  m;
 
   constructor(r: number, m: number) {
     this.G = this.generateG(r, m);
+    this.m = m;
   }
 
   private generateG(r: number, m: number) {
@@ -36,4 +31,31 @@ export class ReedMuller {
       ];
     }
   }
+
+  public fastDecode(w: number[]) {
+    let _w = w.map((x) => (x === 0 ? -1 : x));
+    for (let i = 1; i <= this.m; i++) {
+      _w = multiply(_w, H_m_i(this.m, i));
+    }
+    let j = 0;
+    _w.forEach((x, ind) => {
+      if (Math.abs(x) > Math.abs(_w[j])) {
+        j = ind;
+      }
+    });
+
+    const res = dec2bin(j);
+    while (res.length < this.m) {
+      res.unshift(0);
+    }
+    res.reverse();
+
+    if (_w[j] > 0) {
+      return [1, ...res];
+    } else {
+      return [0, ...res];
+    }
+  }
 }
+
+const dec2bin = (dec) => (dec >>> 0).toString(2).split("").map(Number);
