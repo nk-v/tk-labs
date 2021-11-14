@@ -57,11 +57,17 @@ const G = (r: number, m: number) => {
   return res;
 };
 
+/**
+ * Формирует корректный порядок массивов I
+ * @param r Параметр r (ограничивает максимальный размер I)
+ * @param m Параметр m (ограничивает максимальное число в I)
+ * @returns Отсортированный массив строк, где каждая строка - соединение элементов I
+ */
 const G_extended = (r: number, m: number) => {
   const xArr = generateVectors(m);
   const iArr = generateBitmasks(r, m).map((row) => row.map(maskToI));
 
-  const res = [];
+  const res: string[] = [];
   iArr.forEach((x) => {
     const currArr = x.map((I) => {
       let curF = f(I);
@@ -77,8 +83,8 @@ const G_extended = (r: number, m: number) => {
   return res;
 };
 
-const reverseBit = (x: number) => (x + 1) % 2;
-const reverseBitVector = (v: number[]) => v.map(reverseBit);
+const inverseBit = (x: number) => (x + 1) % 2;
+const inverseBitVector = (v: number[]) => v.map(inverseBit);
 
 const major = (r: number, m: number, word: number[]) => {
   const words = generateVectors(m);
@@ -92,7 +98,7 @@ const major = (r: number, m: number, word: number[]) => {
     masks[i].forEach((mask) => {
       len++;
       const I = maskToI(mask);
-      const reversedMask = reverseBitVector(mask);
+      const reversedMask = inverseBitVector(mask);
       const IC = maskToI(reversedMask);
 
       const fI = f(I);
